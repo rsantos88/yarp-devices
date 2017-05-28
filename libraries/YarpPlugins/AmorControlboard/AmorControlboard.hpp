@@ -11,7 +11,7 @@
 #include <yarp/dev/IControlLimits2.h>
 #include <yarp/dev/PolyDriver.h>
 
-#include <amor.h>
+#include <amor_ex.h>
 
 #include "ColorDebug.hpp"
 
@@ -39,7 +39,8 @@ class AmorControlboard : public yarp::dev::DeviceDriver,
                          public yarp::dev::IControlMode2,
                          public yarp::dev::IAxisInfo,
                          public yarp::dev::ITorqueControl,
-                         public yarp::dev::IInteractionMode
+                         public yarp::dev::IInteractionMode,
+                         public yarp::dev::IMotor
 {
 public:
 
@@ -859,6 +860,66 @@ public:
      * @return true or false on success or failure. If one or more joint fails, the return value will be false.
      */
     virtual bool setInteractionModes(yarp::dev::InteractionModeEnum* modes);
+
+// -------- IMotor declarations. Implementation in IMotorImpl.cpp --------
+
+    /**
+     * Get the number of available motors.
+     * @param num retrieved number of available motors
+     * @return true/false
+     */
+    virtual bool getNumberOfMotors(int *num);
+
+    /**
+     * Get temperature of a motor.
+     * @param m motor number
+     * @param val retrieved motor temperature
+     * @return true/false
+     */
+    virtual bool getTemperature(int m, double *val);
+
+    /**
+     * Get temperature of all the motors.
+     * @param vals pointer to an array containing all motor temperatures
+     * @return true/false
+     */
+    virtual bool getTemperatures(double *vals);
+
+    /**
+     * Retreives the current temperature limit for a specific motor.
+     * The specific behavior of the motor when the temperature limit is
+     * exceeded depends on the implementation (power off recommended).
+     * @param m motor number
+     * @param temp the current temperature limit.
+     * @return true/false
+     */
+    virtual bool getTemperatureLimit(int m, double *temp);
+
+    /**
+     * Set the temperature limit for a specific motor.
+     * The specific behavior of the motor when the temperature limit is
+     * exceeded depends on the implementation (power off recommended).
+     * @param m motor number
+     * @param temp the temperature limit to be set
+     * @return true/false
+     */
+    virtual bool setTemperatureLimit(int m, const double temp);
+
+    /**
+    * Get the gearbox ratio for a specific motor
+    * @param m motor number
+    * @param val retrieved gearbox ratio
+    * @return true/false
+    */
+    virtual bool getGearboxRatio(int m, double *val);
+
+    /**
+    * Set the gearbox ratio for a specific motor
+    * @param m motor number
+    * @param gearbox ratio to be set
+    * @return true/false
+    */
+    virtual bool setGearboxRatio(int m, const double val);
 
 // -------- DeviceDriver declarations. Implementation in IDeviceDriverImpl.cpp --------
 

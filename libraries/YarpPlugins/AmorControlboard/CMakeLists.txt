@@ -33,7 +33,8 @@ if(NOT SKIP_AmorControlboard)
                                      IVelocityControl2Impl.cpp
                                      IAxisInfoImpl.cpp
                                      ITorqueControlImpl.cpp
-                                     IInteractionModeImpl.cpp)
+                                     IInteractionModeImpl.cpp
+                                     IMotorImpl.cpp)
 
     add_dependencies(AmorControlboard COLOR_DEBUG)
 
