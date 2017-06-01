@@ -89,16 +89,54 @@ bool roboticslab::AmorControlboard::checkMotionDone(const int n_joint, const int
 
 bool roboticslab::AmorControlboard::setRefSpeeds(const int n_joint, const int *joints, const double *spds)
 {
-    CD_ERROR("Not available (%d).\n", n_joint);
-    return false;
+    CD_DEBUG("(%d)\n", n_joint);
+
+    if (!batchWithinRange(n_joint))
+    {
+        return false;
+    }
+
+    AMOR_VECTOR7 speeds;
+
+    if (n_joint < AMOR_NUM_JOINTS && amor_get_ref_speeds(handle, &speeds) != AMOR_SUCCESS)
+    {
+        CD_ERROR("%s\n", amor_error());
+        return false;
+    }
+
+    for (int j = 0; j < n_joint; j++)
+    {
+        speeds[joints[j]] = toRad(spds[j]);
+    }
+
+    return amor_set_ref_speeds(handle, speeds) == AMOR_SUCCESS;
 }
 
 // -----------------------------------------------------------------------------
 
 bool roboticslab::AmorControlboard::setRefAccelerations(const int n_joint, const int *joints, const double *accs)
 {
-    CD_ERROR("Not available (%d).\n", n_joint);
-    return false;
+    CD_DEBUG("(%d)\n", n_joint);
+
+    if (!batchWithinRange(n_joint))
+    {
+        return false;
+    }
+
+    AMOR_VECTOR7 accelerations;
+
+    if (n_joint < AMOR_NUM_JOINTS && amor_get_ref_accelerations(handle, &accelerations) != AMOR_SUCCESS)
+    {
+        CD_ERROR("%s\n", amor_error());
+        return false;
+    }
+
+    for (int j = 0; j < n_joint; j++)
+    {
+        accelerations[joints[j]] = toRad(accs[j]);
+    }
+
+    return amor_set_ref_accelerations(handle, accelerations) == AMOR_SUCCESS;
 }
 
 // -----------------------------------------------------------------------------
@@ -112,17 +150,17 @@ bool roboticslab::AmorControlboard::getRefSpeeds(const int n_joint, const int *j
         return false;
     }
 
+    AMOR_VECTOR7 speeds;
+
+    if (amor_get_ref_speeds(handle, &speeds) != AMOR_SUCCESS)
+    {
+        CD_ERROR("%s\n", amor_error());
+        return false;
+    }
+
     for (int j = 0; j < n_joint; j++)
     {
-        AMOR_JOINT_INFO parameters;
-
-        if (amor_get_joint_info(handle, joints[j], &parameters) != AMOR_SUCCESS)
-        {
-            CD_ERROR("%s\n", amor_error());
-            return false;
-        }
-
-        spds[j] = toDeg(parameters.maxVelocity);
+        spds[j] = toDeg(speeds[joints[j]]);
     }
 
     return true;
@@ -139,17 +177,17 @@ bool roboticslab::AmorControlboard::getRefAccelerations(const int n_joint, const
         return false;
     }
 
+    AMOR_VECTOR7 accelerations;
+
+    if (amor_get_ref_accelerations(handle, &accelerations) != AMOR_SUCCESS)
+    {
+        CD_ERROR("%s\n", amor_error());
+        return false;
+    }
+
     for (int j = 0; j < n_joint; j++)
     {
-        AMOR_JOINT_INFO parameters;
-
-        if (amor_get_joint_info(handle, joints[j], &parameters) != AMOR_SUCCESS)
-        {
-            CD_ERROR("%s\n", amor_error());
-            return false;
-        }
-
-        accs[j] = toDeg(parameters.maxAcceleration);
+        accs[j] = toDeg(accelerations[joints[j]]);
     }
 
     return true;
