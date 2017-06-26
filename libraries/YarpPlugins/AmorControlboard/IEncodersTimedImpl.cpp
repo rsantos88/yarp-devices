@@ -19,8 +19,8 @@ bool roboticslab::AmorControlboard::getEncodersTimed(double *encs, double *time)
 bool roboticslab::AmorControlboard::getEncoderTimed(int j, double *encs, double *time)
 {
     //CD_DEBUG("(%d)\n", j);
-    *time = yarp::os::Time::now();
-    return getEncoder(j, encs);
+    //*time = yarp::os::Time::now();
+    //return getEncoder(j, encs);
 }
 
 // -----------------------------------------------------------------------------

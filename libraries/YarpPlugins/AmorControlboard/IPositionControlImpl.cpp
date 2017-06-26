@@ -215,15 +215,15 @@ bool roboticslab::AmorControlboard::getRefSpeed(int j, double *ref)
         return false;
     }
 
-    AMOR_VECTOR7 speeds;
+    real speed;
 
-    if (amor_get_ref_speeds(handle, &speeds) != AMOR_SUCCESS)
+    if (amor_get_ref_speed(handle, j, &speed) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
-    *ref = toDeg(speeds[j]);
+    *ref = toDeg(speed);
 
     return true;
 }
@@ -261,15 +261,15 @@ bool roboticslab::AmorControlboard::getRefAcceleration(int j, double *acc)
         return false;
     }
 
-    AMOR_VECTOR7 accelerations;
+    real acceleration;
 
-    if (amor_get_ref_accelerations(handle, &accelerations) != AMOR_SUCCESS)
+    if (amor_get_ref_acceleration(handle, j, &acceleration) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
-    *acc = toDeg(accelerations[j]);
+    *acc = toDeg(acceleration);
 
     return true;
 }

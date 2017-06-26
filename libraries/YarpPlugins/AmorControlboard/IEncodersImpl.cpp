@@ -38,22 +38,22 @@ bool roboticslab::AmorControlboard::setEncoders(const double *vals)
 
 bool roboticslab::AmorControlboard::getEncoder(int j, double *v)
 {
-    //CD_DEBUG("(%d)\n", j);
+    CD_DEBUG("(%d)\n", j);
 
     if (!indexWithinRange(j))
     {
         return false;
     }
 
-    AMOR_VECTOR7 positions;
+    real position;
 
-    if (amor_get_actual_positions(handle, &positions) != AMOR_SUCCESS)
+    if (amor_get_actual_position(handle, j, &position) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
-    *v = toDeg(positions[j]);
+    *v = toDeg(position);
 
     return true;
 }
@@ -84,22 +84,22 @@ bool roboticslab::AmorControlboard::getEncoders(double *encs)
 
 bool roboticslab::AmorControlboard::getEncoderSpeed(int j, double *sp)
 {
-    //CD_DEBUG("(%d)\n", j);
+    CD_DEBUG("(%d)\n", j);
 
     if (!indexWithinRange(j))
     {
         return false;
     }
 
-    AMOR_VECTOR7 velocities;
+    real velocity;
 
-    if (amor_get_actual_velocities(handle, &velocities) != AMOR_SUCCESS)
+    if (amor_get_actual_velocity(handle, j, &velocity) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
-    *sp = toDeg(velocities[j]);
+    *sp = toDeg(velocity);
 
     return true;
 }
