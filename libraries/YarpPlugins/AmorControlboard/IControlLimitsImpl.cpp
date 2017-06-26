@@ -2,6 +2,8 @@
 
 #include "AmorControlboard.hpp"
 
+#include <limits>
+
 // ------------------- IControlLimits related ------------------------------------
 
 bool roboticslab::AmorControlboard::setLimits(int axis, double min, double max)
@@ -29,8 +31,16 @@ bool roboticslab::AmorControlboard::getLimits(int axis, double *min, double *max
         return false;
     }
 
-    *min = toDeg(parameters.lowerJointLimit);
-    *max = toDeg(parameters.upperJointLimit);
+    if (axis == 0 || parameters.lowerJointLimit == 0)
+    {
+        *min = -180;
+        *max = 180;
+    }
+    else
+    {
+        *min = toDeg(parameters.lowerJointLimit);
+        *max = toDeg(parameters.upperJointLimit);
+    }
 
     return true;
 }
