@@ -922,6 +922,7 @@ private:
     AMOR_HANDLE handle;
     yarp::dev::PolyDriver cartesianControllerDevice;
     bool usingCartesianController;
+    yarp::os::Semaphore handleReady;
 };
 
 }  // namespace roboticslab

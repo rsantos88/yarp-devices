@@ -15,18 +15,28 @@ bool roboticslab::AmorControlboard::velocityMove(const int n_joint, const int *j
 
     AMOR_VECTOR7 velocities;
 
+    handleReady.wait();
+
     if (n_joint < AMOR_NUM_JOINTS && amor_get_actual_velocities(handle, &velocities) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
+    handleReady.post();
+
     for (int j = 0; j < n_joint; j++)
     {
         velocities[joints[j]] = toRad(spds[j]);
     }
 
-    return amor_set_velocities(handle, velocities) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_velocities(handle, velocities) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -42,11 +52,15 @@ bool roboticslab::AmorControlboard::getRefVelocity(const int joint, double *vel)
 
     AMOR_VECTOR7 velocities;
 
+    handleReady.wait();
+
     if (amor_get_req_velocities(handle, &velocities) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     *vel = toDeg(velocities[joint]);
 
@@ -61,11 +75,15 @@ bool roboticslab::AmorControlboard::getRefVelocities(double *vels)
 
     AMOR_VECTOR7 velocities;
 
+    handleReady.wait();
+
     if (amor_get_req_velocities(handle, &velocities) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < AMOR_NUM_JOINTS; j++)
     {
@@ -88,11 +106,15 @@ bool roboticslab::AmorControlboard::getRefVelocities(const int n_joint, const in
 
     AMOR_VECTOR7 velocities;
 
+    handleReady.wait();
+
     if (amor_get_req_velocities(handle, &velocities) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < n_joint; j++)
     {

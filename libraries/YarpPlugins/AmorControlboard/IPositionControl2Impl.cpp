@@ -15,18 +15,28 @@ bool roboticslab::AmorControlboard::positionMove(const int n_joint, const int *j
 
     AMOR_VECTOR7 positions;
 
+    handleReady.wait();
+
     if (n_joint < AMOR_NUM_JOINTS && amor_get_actual_positions(handle, &positions) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
+    handleReady.post();
+
     for (int j = 0; j < n_joint; j++)
     {
         positions[joints[j]] = toRad(refs[j]);
     }
 
-    return amor_set_positions(handle, positions) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_positions(handle, positions) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -42,18 +52,28 @@ bool roboticslab::AmorControlboard::relativeMove(const int n_joint, const int *j
 
     AMOR_VECTOR7 positions;
 
+    handleReady.wait();
+
     if (n_joint < AMOR_NUM_JOINTS && amor_get_actual_positions(handle, &positions) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
+    handleReady.post();
+
     for (int j = 0; j < n_joint; j++)
     {
         positions[joints[j]] += toRad(deltas[j]);
     }
 
-    return amor_set_positions(handle, positions) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_positions(handle, positions) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -69,11 +89,15 @@ bool roboticslab::AmorControlboard::checkMotionDone(const int n_joint, const int
 
     amor_movement_status status;
 
+    handleReady.wait();
+
     if (amor_get_movement_status(handle, &status) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     bool flag = (status == AMOR_MOVEMENT_STATUS_FINISHED);
 
@@ -98,18 +122,28 @@ bool roboticslab::AmorControlboard::setRefSpeeds(const int n_joint, const int *j
 
     AMOR_VECTOR7 speeds;
 
+    handleReady.wait();
+
     if (n_joint < AMOR_NUM_JOINTS && amor_get_ref_speeds(handle, &speeds) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
+    handleReady.post();
+
     for (int j = 0; j < n_joint; j++)
     {
         speeds[joints[j]] = toRad(spds[j]);
     }
 
-    return amor_set_ref_speeds(handle, speeds) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_ref_speeds(handle, speeds) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -125,18 +159,28 @@ bool roboticslab::AmorControlboard::setRefAccelerations(const int n_joint, const
 
     AMOR_VECTOR7 accelerations;
 
+    handleReady.wait();
+
     if (n_joint < AMOR_NUM_JOINTS && amor_get_ref_accelerations(handle, &accelerations) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
+    handleReady.post();
+
     for (int j = 0; j < n_joint; j++)
     {
         accelerations[joints[j]] = toRad(accs[j]);
     }
 
-    return amor_set_ref_accelerations(handle, accelerations) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_ref_accelerations(handle, accelerations) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -152,11 +196,15 @@ bool roboticslab::AmorControlboard::getRefSpeeds(const int n_joint, const int *j
 
     AMOR_VECTOR7 speeds;
 
+    handleReady.wait();
+
     if (amor_get_ref_speeds(handle, &speeds) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < n_joint; j++)
     {
@@ -179,11 +227,15 @@ bool roboticslab::AmorControlboard::getRefAccelerations(const int n_joint, const
 
     AMOR_VECTOR7 accelerations;
 
+    handleReady.wait();
+
     if (amor_get_ref_accelerations(handle, &accelerations) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < n_joint; j++)
     {
@@ -220,11 +272,15 @@ bool roboticslab::AmorControlboard::getTargetPosition(const int joint, double *r
 
     AMOR_VECTOR7 positions;
 
+    handleReady.wait();
+
     if (amor_get_req_positions(handle, &positions) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     *ref = toDeg(positions[joint]);
 
@@ -239,11 +295,15 @@ bool roboticslab::AmorControlboard::getTargetPositions(double *refs)
 
     AMOR_VECTOR7 positions;
 
+    handleReady.wait();
+
     if (amor_get_req_positions(handle, &positions) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < AMOR_NUM_JOINTS; j++)
     {
@@ -266,11 +326,15 @@ bool roboticslab::AmorControlboard::getTargetPositions(const int n_joint, const 
 
     AMOR_VECTOR7 positions;
 
+    handleReady.wait();
+
     if (amor_get_req_positions(handle, &positions) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < n_joint; j++)
     {

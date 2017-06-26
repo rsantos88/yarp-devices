@@ -23,11 +23,15 @@ bool roboticslab::AmorControlboard::getVelLimits(int axis, double *min, double *
 
     AMOR_JOINT_INFO parameters;
 
+    handleReady.wait();
+
     if (amor_get_joint_info(handle, axis, &parameters) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     *min = 0.0;
     *max = toDeg(parameters.maxVelocity);

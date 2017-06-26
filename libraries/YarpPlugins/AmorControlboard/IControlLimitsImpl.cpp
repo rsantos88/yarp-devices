@@ -23,11 +23,15 @@ bool roboticslab::AmorControlboard::getLimits(int axis, double *min, double *max
 
     AMOR_JOINT_INFO parameters;
 
+    handleReady.wait();
+
     if (amor_get_joint_info(handle, axis, &parameters) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     *min = toDeg(parameters.lowerJointLimit);
     *max = toDeg(parameters.upperJointLimit);

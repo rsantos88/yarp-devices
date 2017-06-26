@@ -15,15 +15,25 @@ bool roboticslab::AmorControlboard::velocityMove(int j, double sp)
 
     AMOR_VECTOR7 velocities;
 
+    handleReady.wait();
+
     if (amor_get_actual_velocities(handle, &velocities) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
 
+    handleReady.post();
+
     velocities[j] = toRad(sp);
 
-    return amor_set_velocities(handle, velocities) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_velocities(handle, velocities) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -39,7 +49,13 @@ bool roboticslab::AmorControlboard::velocityMove(const double *sp)
         velocities[j] = toRad(sp[j]);
     }
 
-    return amor_set_velocities(handle, velocities) == AMOR_SUCCESS;
+    bool ret;
+
+    handleReady.wait();
+    ret = amor_set_velocities(handle, velocities) == AMOR_SUCCESS;
+    handleReady.post();
+
+    return ret;
 }
 
 // ----------------------------------------------------------------------------

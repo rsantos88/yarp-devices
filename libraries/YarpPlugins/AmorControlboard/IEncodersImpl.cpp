@@ -47,11 +47,15 @@ bool roboticslab::AmorControlboard::getEncoder(int j, double *v)
 
     real position;
 
+    handleReady.wait();
+
     if (amor_get_actual_position(handle, j, &position) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     *v = toDeg(position);
 
@@ -66,11 +70,15 @@ bool roboticslab::AmorControlboard::getEncoders(double *encs)
 
     AMOR_VECTOR7 positions;
 
+    handleReady.wait();
+
     if (amor_get_actual_positions(handle, &positions) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < AMOR_NUM_JOINTS; j++)
     {
@@ -93,11 +101,15 @@ bool roboticslab::AmorControlboard::getEncoderSpeed(int j, double *sp)
 
     real velocity;
 
+    handleReady.wait();
+
     if (amor_get_actual_velocity(handle, j, &velocity) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     *sp = toDeg(velocity);
 
@@ -112,11 +124,15 @@ bool roboticslab::AmorControlboard::getEncoderSpeeds(double *spds)
 
     AMOR_VECTOR7 velocities;
 
+    handleReady.wait();
+
     if (amor_get_actual_velocities(handle, &velocities) != AMOR_SUCCESS)
     {
         CD_ERROR("%s\n", amor_error());
         return false;
     }
+
+    handleReady.post();
 
     for (int j = 0; j < AMOR_NUM_JOINTS; j++)
     {
