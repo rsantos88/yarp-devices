@@ -25,6 +25,8 @@
 #include "LinearInterpolationBuffer.hpp"
 #include "StateVariables.hpp"
 
+#include <fstream>
+
 #define CHECK_JOINT(j) do { int ax; if (getAxes(&ax), (j) != ax - 1) return false; } while (0)
 
 #define CHECK_MODE(mode) do { if ((mode) != vars.actualControlMode) return false; } while (0)
@@ -295,6 +297,10 @@ private:
     LinearInterpolationBuffer * linInterpBuffer;
 
     yarp::os::Timer * monitorThread;
+
+    /** Write log in CSV file **/
+    double initTime;
+    FILE *fp;
 };
 
 } // namespace roboticslab

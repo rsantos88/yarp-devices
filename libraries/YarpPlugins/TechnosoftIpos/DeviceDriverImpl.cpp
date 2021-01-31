@@ -175,6 +175,10 @@ bool TechnosoftIpos::open(yarp::os::Searchable & config)
         }
     }
 
+    // log
+    fp = fopen("../csp-log.csv","w+");
+    fprintf(fp, "timeStamp, Value\n");
+
     return !monitorThread || monitorThread->start();
 }
 
