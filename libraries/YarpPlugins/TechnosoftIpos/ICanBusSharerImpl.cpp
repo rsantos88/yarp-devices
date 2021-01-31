@@ -127,8 +127,6 @@ bool TechnosoftIpos::initialize()
         CD_WARNING("Initial drive state transitions failed (canId: %d).\n", can->getId());
     }
 
-    // timeStamp
-    initTime = yarp::os::Time::now();
     return true;
 }
 
@@ -246,7 +244,7 @@ bool TechnosoftIpos::synchronize()
             double value = vars.clipSyncPositionTarget();
 
             // Write value in a log file
-            fprintf(fp,"%.4f, ", yarp::os::Time::now()-initTime);
+            fprintf(fp,"%.4f, ", yarp::os::Time::now());
             fprintf(fp,"%.8f\n" , value);
 
             std::int32_t data = vars.degreesToInternalUnits(value);
