@@ -3,7 +3,7 @@ import math
 import sys
 import yarp
 
-# usage: python3 testSingleJoint.py /teoSim 3 test/test.csv  test/test_encs.csv
+# usage: python3 testSingleJoint.py /teoSim 3 test/test_singleJoint.csv  test/test_encs.csv
 
 DELAY = 0.05
 
