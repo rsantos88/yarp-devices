@@ -64,13 +64,12 @@ with open(csvInPath, 'r') as csvInFile:
     csvreader = csv.reader(csvInFile)
     with open(csvOutPath, 'w', newline='') as csvOutfile:
         csvwriter = csv.writer(csvOutfile, delimiter=',')
-        csvwriter.writerow(['timestamp', 'value'])
+        csvwriter.writerow(['timestamp', 'setPosition', 'getEncoder'])
         for row in csvreader:
             if True:
                 print('reading >> ', row[3])
-                leftArmPosd.setPosition(joint, float(row[3])) # set position
-                print('encoder >> ', leftArmEnc.getEncoder(joint))
-                csvwriter.writerow([yarp.now(), leftArmEnc.getEncoder(joint)])
+                leftArmPosd.setPosition(joint, float(row[3]))
+                csvwriter.writerow([yarp.now(), row[3], leftArmEnc.getEncoder(joint)])
                 delay = DELAY * i - (yarp.now() - start)
                 yarp.delay(delay)
                 i = i + 1
