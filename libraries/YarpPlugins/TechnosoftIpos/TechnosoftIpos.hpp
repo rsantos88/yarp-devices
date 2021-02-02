@@ -299,8 +299,7 @@ private:
     yarp::os::Timer * monitorThread;
 
     /** Write log in CSV file **/
-    double initTime;
-    FILE *fp;
+    std::ofstream logfile;
 };
 
 } // namespace roboticslab

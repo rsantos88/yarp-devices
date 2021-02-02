@@ -176,8 +176,9 @@ bool TechnosoftIpos::open(yarp::os::Searchable & config)
     }
 
     // log
-    fp = fopen("../csp-log.csv","w+");
-    fprintf(fp, "timeStamp, Value\n");
+    logfile.open ("log.csv");
+    std::fixed(logfile);
+    logfile << "timestamp, value" << std::endl;
 
     return !monitorThread || monitorThread->start();
 }

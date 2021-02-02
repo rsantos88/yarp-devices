@@ -244,8 +244,7 @@ bool TechnosoftIpos::synchronize()
             double value = vars.clipSyncPositionTarget();
 
             // Write value in a log file
-            fprintf(fp,"%.4f, ", yarp::os::Time::now());
-            fprintf(fp,"%.8f\n" , value);
+            logfile << yarp::os::Time::now() << ", " << value << std::endl;
 
             std::int32_t data = vars.degreesToInternalUnits(value);
             return can->rpdo3()->write(data);
